@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <title>Lista de Produtos</title>
+    <link rel="stylesheet" href="listaProdutos.css" />
+  </head>
+
+  <body>
+    <h1>Produtos Cadastrados</h1>
+    <a
+      href="index.html"
+      class="hero-btn"
+      style="
+        margin: 20px auto 20px auto;
+        display: block;
+        text-align: center;
+        max-width: 420px;
+      "
+      >Voltar à Página Principal</a
+    >
+    <a href="formulario.html">Cadastrar novo produto</a>
+
+    <ul id="listaProdutos"></ul>
+
+    <script>
+      async function carregarProdutos() {
+        try {
+          const resposta = await fetch("/auth/produtosListagem");
+          const produtos = await resposta.json();
+
+          const lista = document.getElementById("listaProdutos");
+          lista.innerHTML = "";
+
+          produtos.forEach((produto) => {
+            const li = document.createElement("li");
+            li.innerHTML =
+              "<strong>Nome:</strong> " +
+              produto.nome +
+              "<br>" +
+              "<strong>Descrição:</strong> " +
+              produto.descricao +
+              "<br>" +
+              "<strong> Valor R$:</strong> " +
+              produto.preco +
+              "<br>" +
+              "<strong> Estoque: </strong> " +
+              produto.estoque;
+
+            // Botão excluir
+            const botaoExcluir = document.createElement("button");
+            botaoExcluir.classList.add("botao-excluir");
+            botaoExcluir.textContent = "Excluir";
+            botaoExcluir.onclick = async () => {
+              const confirmar = confirm(
+                "Deseja excluir o produto " + produto.nome + " ?"
+              );
+              if (confirmar) {
+                try {
+                  const resposta = await fetch(
+                    "/auth/produtosExcluir/" + produto._id,
+                    {
+                      method: "DELETE",
+                    }
+                  );
+                  const resultado = await resposta.json();
+                  if (resultado.mensagem) {
+                    alert(resultado.mensagem);
+                  } else if (resultado.erro) {
+                    alert("Erro: " + resultado.erro);
+                  }
+                  carregarProdutos();
+                } catch (err) {
+                  alert("Erro ao excluir produto");
+                }
+              }
+            };
+
+            // Botão editar
+            const botaoEditar = document.createElement("button");
+            botaoEditar.textContent = "Editar";
+            botaoEditar.classList.add("botao-excluir");
+            botaoEditar.onclick = () => {
+              window.location.href = `cadastroProdutos.html?id=${produto._id}`;
+            };
+
+            // Container do botão excluir
+            const containerBotao = document.createElement("div");
+            containerBotao.classList.add("container-botao");
+            containerBotao.appendChild(botaoExcluir);
+            containerBotao.appendChild(botaoEditar);
+            li.appendChild(containerBotao);
+            lista.appendChild(li);
+
+            // Botão de adicionar quantidade
+            const botaoMais = document.createElement("button");
+            botaoMais.textContent = "+";
+            botaoMais.classList.add("botao-quantidade");
+            botaoMais.onclick = async () => {
+              await atualizarEstoque(produto._id, produto.estoque + 1);
+            };
+
+            // Botão de diminuir quantidade
+            const botaoMenos = document.createElement("button");
+            botaoMenos.textContent = "-";
+            botaoMenos.classList.add("botao-quantidade");
+            botaoMenos.onclick = async () => {
+              if (produto.estoque > 0) {
+                await atualizarEstoque(produto._id, produto.estoque - 1);
+              }
+            };
+
+            // Atualiza o estoque
+            async function atualizarEstoque(id, novoValor) {
+              try {
+                const resposta = await fetch(
+                  "/auth/produtos/" + id + "/estoque",
+                  {
+                    method: "PATCH",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ estoque: novoValor }),
+                  }
+                );
+
+                await resposta.json();
+                carregarProdutos();
+              } catch (err) {
+                alert("Erro ao atualizar estoque -> " + err);
+              }
+            }
+
+            li.appendChild(botaoMais);
+            li.appendChild(botaoMenos);
+          });
+        } catch (err) {
+          console.error("Erro ao carregar produtos:", err);
+        }
+      }
+
+      window.onload = carregarProdutos;
+
+      // Só libera a página se o token for válido
+      async function verificarToken() {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          window.location.href = "/";
+        } else {
+          console.log("Token existente, pagina liberada: " + token);
+        }
+      }
+      window.addEventListener("DOMContentLoaded", verificarToken);
+    </script>
+  </body>
+</html>

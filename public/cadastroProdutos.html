@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <title>Cadastro de Produtos</title>
+    <link rel="stylesheet" href="cadastroProdutos.css" />
+  </head>
+  <body>
+    <div class="divTop">
+      <h1>Cadastro de Produtos</h1>
+      <a
+        href="index.html"
+        class="link"
+        style="
+          margin: 20px auto 20px auto;
+          display: block;
+          text-align: center;
+          max-width: 420px;
+        "
+        >Voltar à Página Principal</a
+      >
+      <a href="listaProdutos.html" class="link">Produtos cadastrados</a>
+    </div>
+
+    <form id="formProduto">
+      <label>Nome: <input type="text" id="nome" required /></label><br />
+      <label>Descricao: <input type="text" id="descricao" required /></label
+      ><br />
+      <label>Codigo: <input type="text" id="codigo" required /></label><br />
+      <label>Preco: 
+  <input 
+    type="text" 
+    id="preco" 
+    required 
+    inputmode="numeric" 
+    pattern="\d*"
+    autocomplete="off"
+  />
+</label><br />
+      <label>Estoque: <input type="number" id="estoque" required /></label
+      ><br />
+      <button type="submit">Cadastrar</button>
+    </form>
+
+    <p id="resposta"></p>
+
+    <script>
+      const form = document.getElementById("formProduto");
+      const resposta = document.getElementById("resposta");
+
+      // Só libera a página se o token for válido
+      async function verificarToken() {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          window.location.href = "/";
+        } else {
+          console.log("Token existente, página liberada: " + token);
+        }
+      }
+
+      // Preencher formulário se for edição
+      window.addEventListener("DOMContentLoaded", async () => {
+        verificarToken();
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+        if (id) {
+          try {
+            const res = await fetch(`/auth/produtosListagem`); // Busca todos produtos
+            const produtos = await res.json();
+            const produto = produtos.find(p => p._id === id);
+            if (produto) {
+              document.getElementById("nome").value = produto.nome;
+              document.getElementById("descricao").value = produto.descricao;
+              document.getElementById("codigo").value = produto.codigo;
+              document.getElementById("preco").value = produto.preco;
+              document.getElementById("estoque").value = produto.estoque;
+            }
+          } catch (err) {
+            resposta.textContent = "Erro ao carregar produto para edição.";
+          }
+        }
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const dados = {
+          nome: document.getElementById("nome").value,
+          descricao: document.getElementById("descricao").value,
+          codigo: document.getElementById("codigo").value,
+          preco: document.getElementById("preco").value,
+          estoque: document.getElementById("estoque").value,
+        };
+
+        // Se for edição, faz PUT, senão POST
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+        try {
+          let res;
+          if (id) {
+            res = await fetch(`/auth/produtos/${id}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(dados),
+            });
+          } else {
+            res = await fetch("/auth/produtos", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(dados),
+            });
+          }
+
+          const resultado = await res.json();
+          resposta.textContent = id
+            ? "Produto atualizado com sucesso!"
+            : "Produto cadastrado com sucesso!";
+          form.reset();
+        } catch (err) {
+          resposta.textContent = "Erro ao salvar produto.";
+          console.error(err);
+        }
+      });
+    </script>
+  </body>
+</html>

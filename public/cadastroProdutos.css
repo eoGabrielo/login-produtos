@@ -1,0 +1,132 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", Arial, sans-serif;
+}
+
+body {
+  background: linear-gradient(120deg, #2a6cf4 0%, #1b2b64 100%);
+  color: #fff;
+  min-height: 100vh;
+  padding: 30px;
+}
+
+.divTop {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.link {
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #b3c6f7;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: #3eea7a;
+  transform: scale(1.05);
+}
+
+form {
+  background-color: #22336b;
+  padding: 32px;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  backdrop-filter: blur(2px);
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  color: #b3c6f7;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 14px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: #1b2b64;
+  color: #fff;
+  border: 1px solid #3eea7a;
+  font-size: 1rem;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+select:focus {
+  border-color: #ff5e99;
+  box-shadow: 0 0 10px #3eea7a;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  background: #ff5e99;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+button:hover {
+  background: #ff3380;
+  transform: scale(1.05);
+}
+
+#resposta {
+  margin-top: 15px;
+  font-size: 1rem;
+  color: #3eea7a;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  form {
+    padding: 16px;
+  }
+  h1 {
+    font-size: 1.3rem;
+  }
+}
+
+.hero-btn {
+  background: #ff5e99;
+  color: #fff;
+  padding: 16px 40px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-decoration: none;
+  margin-bottom: 36px;
+  display: inline-block;
+  transition: background 0.2s;
+  text-align: center;
+}
+
+.hero-btn:hover {
+  background: #ff3380;
+}
