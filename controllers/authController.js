@@ -145,3 +145,26 @@ exports.patchProduto = async (req, res) =>{
         res.json({erro: 'Erro ao atualizar estoque', detalhes: error.message});
     }
 };
+
+// Atualiza todos os campos do produto
+exports.putProduto = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { nome, descricao, codigo, preco, estoque } = req.body;
+
+        const produtoAtualizado = await Produto.findByIdAndUpdate(
+            id,
+            { nome, descricao, codigo, preco, estoque },
+            { new: true }
+        );
+
+        if (!produtoAtualizado) {
+            return res.status(404).json({ erro: 'Produto não encontrado' });
+        } else {
+            res.json(produtoAtualizado);
+        }
+    } catch (error) {
+        res.status(500).json({ erro: 'Erro ao atualizar produto', detalhes: error.message });
+    }
+};
+// Função adicionada para permitir edição completa de produtos via PUT.
