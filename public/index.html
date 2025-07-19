@@ -17,7 +17,10 @@
             <li><a href="/cadastroProdutos.html">CADASTRO DE<br> PRODUTOS</a></li>
             <li><a href="/listaProdutos.html">PRODUTOS<br> CADASTRADOS</a></li>
         </ul>
-        <a href="https://wa.me/5511945748486" target="_blank" class="cta-btn">CONTATO</a>
+        <div class="header-buttons">
+            <a href="https://wa.me/5511945748486" target="_blank" class="cta-btn">CONTATO</a>
+            <button id="logoutBtn" class="cta-btn logout-btn" style="display: none;">SAIR</button>
+        </div>
     </nav>
     <section class="hero">
         <div class="hero-content">
@@ -41,7 +44,6 @@
         </div>
         <div class="hero-image">
             <div class="mockup">
-                <!-- Aqui pode ser colocado um SVG ou imagem ilustrativa -->
                 <img src="prog.png" alt="Imagem ilustrativa" class="mockup-image">
                 <div class="stats">
                     <div class="stat">
@@ -60,5 +62,25 @@
             </div>
         </div>
     </section>
+
+    <script>
+        // Verifica status de login e mostra/esconde botão
+        function verificarStatusLogin() {
+            const token = localStorage.getItem("authToken");
+            const logoutBtn = document.getElementById("logoutBtn");
+            
+            logoutBtn.style.display = token ? "block" : "none";
+        }
+
+        // Função de logout
+        function fazerLogout() {
+            localStorage.removeItem("authToken");
+            document.getElementById("logoutBtn").style.display = "none";
+            window.location.href = "/loginCadastro.html";
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", fazerLogout);
+        window.addEventListener("DOMContentLoaded", verificarStatusLogin);
+    </script>
 </body>
 </html>

@@ -49,6 +49,14 @@ body {
 .nav-links a:hover {
   color: #3eea7a;
 }
+
+/* Container para os botões do header */
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .cta-btn {
   background: #ff5e99;
   color: #fff;
@@ -57,9 +65,19 @@ body {
   font-weight: bold;
   text-decoration: none;
   transition: background 0.2s;
-  margin-left: 32px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
 }
 .cta-btn:hover {
+  background: #ff3380;
+}
+
+/* Estilo específico para o botão de logout - mesma cor do CONTATO */
+.logout-btn {
+  background: #ff5e99;
+}
+.logout-btn:hover {
   background: #ff3380;
 }
 
@@ -225,9 +243,17 @@ body {
       border-radius: 6px;
     }
   
+  .header-buttons {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
   .cta-btn {
     margin-left: 0;
-    margin-top: 10px;
+    margin-top: 0;
+    font-size: 0.9rem;
+    padding: 10px 24px;
   }
   
   .hero-content h1 {
@@ -291,6 +317,22 @@ body {
 
 /* Mobile muito pequeno */
 @media (max-width: 400px) {
+  .navbar {
+    padding: 15px 2vw;
+  }
+  
+  .header-buttons {
+    flex-direction: row;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .cta-btn {
+    font-size: 0.8rem;
+    padding: 8px 16px;
+  }
+  
   .hero-content h1 {
     font-size: 1.8rem;
   }

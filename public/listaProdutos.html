@@ -85,7 +85,7 @@
               window.location.href = `cadastroProdutos.html?id=${produto._id}`;
             };
 
-            // Container do botão excluir
+            // Container dos botões
             const containerBotao = document.createElement("div");
             containerBotao.classList.add("container-botao");
             containerBotao.appendChild(botaoExcluir);
@@ -93,7 +93,7 @@
             li.appendChild(containerBotao);
             lista.appendChild(li);
 
-            // Botão de adicionar quantidade
+            // Botões de quantidade
             const botaoMais = document.createElement("button");
             botaoMais.textContent = "+";
             botaoMais.classList.add("botao-quantidade");
@@ -101,7 +101,6 @@
               await atualizarEstoque(produto._id, produto.estoque + 1);
             };
 
-            // Botão de diminuir quantidade
             const botaoMenos = document.createElement("button");
             botaoMenos.textContent = "-";
             botaoMenos.classList.add("botao-quantidade");
@@ -111,7 +110,7 @@
               }
             };
 
-            // Atualiza o estoque
+            // Atualiza estoque
             async function atualizarEstoque(id, novoValor) {
               try {
                 const resposta = await fetch(
@@ -142,13 +141,11 @@
 
       window.onload = carregarProdutos;
 
-      // Só libera a página se o token for válido
+      // Verifica token de autenticação
       async function verificarToken() {
         const token = localStorage.getItem("authToken");
         if (!token) {
           window.location.href = "/";
-        } else {
-          console.log("Token existente, pagina liberada: " + token);
         }
       }
       window.addEventListener("DOMContentLoaded", verificarToken);

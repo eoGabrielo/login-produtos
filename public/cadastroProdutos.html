@@ -49,24 +49,22 @@
       const form = document.getElementById("formProduto");
       const resposta = document.getElementById("resposta");
 
-      // Só libera a página se o token for válido
+      // Verifica token de autenticação
       async function verificarToken() {
         const token = localStorage.getItem("authToken");
         if (!token) {
           window.location.href = "/";
-        } else {
-          console.log("Token existente, página liberada: " + token);
         }
       }
 
-      // Preencher formulário se for edição
+      // Carrega dados para edição se houver ID
       window.addEventListener("DOMContentLoaded", async () => {
         verificarToken();
         const params = new URLSearchParams(window.location.search);
         const id = params.get("id");
         if (id) {
           try {
-            const res = await fetch(`/auth/produtosListagem`); // Busca todos produtos
+            const res = await fetch(`/auth/produtosListagem`);
             const produtos = await res.json();
             const produto = produtos.find(p => p._id === id);
             if (produto) {
@@ -93,7 +91,6 @@
           estoque: document.getElementById("estoque").value,
         };
 
-        // Se for edição, faz PUT, senão POST
         const params = new URLSearchParams(window.location.search);
         const id = params.get("id");
         try {

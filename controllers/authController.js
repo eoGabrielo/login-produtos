@@ -1,23 +1,20 @@
-const { User, Produto } = require('../models/Schema'); // Modelos do MongoDB
-const bcrypt = require('bcryptjs'); // Para senhas
-const jwt = require('jsonwebtoken'); // Para tokens JWT
+const { User, Produto } = require('../models/Schema');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-// Cadastro de novo usuário
+// Cadastro de usuário
 exports.register = async (req, res) => {
     try {
         const userEmail = req.body.userEmail;
         const userPassword = req.body.userPassword;
 
-        // Verifica se o email já existe
         const existingUser = await User.findOne({userEmail});
         if(existingUser){
             return res.status(400).json({ message: 'Usuário já existe' });
         } else {
-            // Cria usuário e salva no banco
             const user = new User({ userEmail, userPassword });
             await user.save();
 
-            // Gera token JWT
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
                 expiresIn: '1h'
             });
@@ -30,18 +27,16 @@ exports.register = async (req, res) => {
     }
 };
 
-// Login do usuário
+// Login
 exports.login = async (req, res) => {
     try{
         const userEmail = req.body.userEmail;
         const userPassword = req.body.userPassword;
 
-        // Busca usuário pelo email
         const user = await User.findOne({userEmail})
         if(user){
             const isMatch = await bcrypt.compare(userPassword, user.userPassword)
             if(isMatch){
-                // Senha correta, gera token
                 const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {
                     expiresIn: '1h'
                 });
@@ -57,7 +52,7 @@ exports.login = async (req, res) => {
     }
 };
 
-// Verifica se o token é válido
+// Verifica token
 exports.check = async (req, res)=> {
     const token = req.headers.authorization?.split(' ')[1];
 
@@ -73,7 +68,7 @@ exports.check = async (req, res)=> {
     }
 }
 
-// Adiciona produto ao banco
+// Adiciona produto
 exports.postProduto = async(req, res) =>{
     try{
         const nome = req.body.nome;
@@ -97,7 +92,7 @@ exports.postProduto = async(req, res) =>{
     }
 };
 
-// Lista todos os produtos
+// Lista produtos
 exports.getProduto = async(req, res) =>{
     try{
         const produtos =  await Produto.find();
@@ -126,7 +121,7 @@ exports.deleteProduto = async (req, res) => {
     }
 };
 
-// Atualiza estoque do produto
+// Atualiza estoque
 exports.patchProduto = async (req, res) =>{
     try{
         const id = req.params.id;
@@ -146,7 +141,7 @@ exports.patchProduto = async (req, res) =>{
     }
 };
 
-// Atualiza todos os campos do produto
+// Atualiza produto completo
 exports.putProduto = async (req, res) => {
     try {
         const id = req.params.id;
@@ -167,4 +162,3 @@ exports.putProduto = async (req, res) => {
         res.status(500).json({ erro: 'Erro ao atualizar produto', detalhes: error.message });
     }
 };
-// Função adicionada para permitir edição completa de produtos via PUT.
